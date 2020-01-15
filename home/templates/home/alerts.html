@@ -1,0 +1,23 @@
+{% if messages %}
+	{% for message in messages %}
+	<div class="alert alert-{{ message.tags }} dismissable text-center">
+		<span>{{ message }}</span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        	<span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	{% endfor %}
+{% endif %}
+
+<script type="text/javascript">
+	jQuery(function($){
+	    if ($('.alert').hasClass('dismissable')) {
+	        setTimeout(function(){
+	            $('.alert').fadeOut();
+	        }, 7500);
+	        $('.alert').click(function(){
+	            $('.alert').fadeOut();
+	        });
+	    }
+	});
+</script>

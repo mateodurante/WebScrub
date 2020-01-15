@@ -1,0 +1,53 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+
+{% block app_title %}Listado de sistemas autónomos{% endblock %}
+
+{% block content %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<strong>Sistemas autónomos</strong>
+			{% if user.is_superuser %}
+				<div class="pull-right">
+					<div class="btn-rigth">
+						<a href="{% url 'asn_create' %}" class="btn btn-xs btn-default">
+						<span class="fa fa-plus-circle fa-fw"></span>Agregar asn
+						</a>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+
+		<table class="table table-condensed table-bordered table-hover">
+			<thead>
+				<th>ASN</th>
+				<th>Dirección IP del terminador GRE</th>
+				<th>Acciones</th>
+			</thead>
+			<tbody>
+			{% for a in asn %}
+				<tr>
+					<td>{{ a.asn }}</td>
+					<td>{{ a.gre_ip }}</td>
+					<td>
+						<div class="btn-group inline">
+		        			<a href="{% url 'asn_show' a.id %}" class="btn btn-sm btn-primary ">Detalles</a>
+			        		{% if user.is_superuser %}
+			        			<button class="btn btn-sm dropdown pull-right btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" role="button" aria-haspopup="true">
+			        				Acciones <span class="caret"></span>
+			        			</button>
+		        				<ul class="dropdown-menu" role="menu">
+		        					<li>
+				        				<a href="{% url 'asn_edit' a.id %}"><span class="fa fa-edit alert-info"></span> Editar</a>
+										<a href="{% url 'asn_delete' a.id %}"> <span class="fa fa-remove alert-danger"></span> Borrar</a>
+		        					</li>
+		        				</ul>
+							{% endif %}
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

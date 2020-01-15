@@ -1,0 +1,9 @@
+{% load bootstrap3 %}
+
+  {% csrf_token %}
+  {% bootstrap_form form set_required=True%}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary" value="Submit">
+      Guardar
+    </button>
+  {% endbuttons %}

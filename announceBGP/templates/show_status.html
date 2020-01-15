@@ -1,0 +1,15 @@
+{% extends "home/apps.html" %}
+
+{% block app_title %}Anuncie su bloque BGP{% endblock %}
+
+{% block content %}
+	<p>Bloque BGP anunciado correctamente</p>
+	<p>Tunel GRE creado</p>
+	{% for line in iptunnel %}
+		{{ line }}
+		<br>
+	{% endfor %}
+{% endblock %}
+
+
+

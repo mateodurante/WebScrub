@@ -1,0 +1,12 @@
+{% load bootstrap3 %}
+
+<!-- RDAP Form -->
+<form action="{% url 'flowspec_create' %}" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form set_required=True%}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary" value="Submit">
+      {% bootstrap_icon "stats" %}  Enviar FlowSpec
+    </button>
+  {% endbuttons %}
+</form>

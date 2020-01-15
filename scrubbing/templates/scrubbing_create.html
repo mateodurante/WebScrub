@@ -1,0 +1,10 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+
+{% block app_title %}Crear nuevo scrubbing center{% endblock %}
+
+{% block content %}
+	<form action="{% url 'scrubbing_store' %}" method="POST">
+		{% include "scrubbing_form.html" %}
+	</form>
+{% endblock %}

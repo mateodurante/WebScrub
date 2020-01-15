@@ -1,0 +1,18 @@
+{% load static %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% include "home/head.html" %}
+</head>
+<body>
+  {% include "home/header.html" %}
+  <div class="content-section-info">
+    {% block content %}{% endblock %}
+  </div>
+  {% include "home/contact.html" %}
+  {% include "home/footer.html" %}
+  {% block base_javascript %}
+  {% endblock  %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+
+{% block app_title %}
+  Remover anuncios
+{% endblock %}
+
+{% block content %}
+
+  <form action={% url 'Withdraw' %} method="post">
+    {% csrf_token %}
+
+    {% if adata  %}
+        <h4>Anuncios de rutas</h4>
+    {%endif%}
+
+    {%for key,value in adata.items%}
+      <div>
+        <label class="checkbox-inline"><input type="checkbox" name="net_id" value="{{key}}">{{value}}</label>
+      </div>
+    {%endfor%}
+
+    {% if fdata %}
+          <h4>Anuncios de FlowSpec</h4>
+    {%endif%}
+
+      {%for key,value in fdata.items%}
+      	<div>
+      		<label class="checkbox-inline"><input type="checkbox" name="flows_id" value="{{key}}">{{value}}</label>
+      	</div>
+      {%endfor%}
+
+      {%if fdata or adata%}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary" value="Submit">
+            {% bootstrap_icon "trash" %}  Remover
+          </button>
+        {% endbuttons %}
+      {%endif%}
+  </form>
+
+{% endblock %}

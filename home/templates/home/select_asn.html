@@ -1,0 +1,17 @@
+{% extends "home/apps.html" %}
+
+{% block app_title %}Elija su sistema autónomo de trabajo{% endblock %}
+
+{% block content %}
+<div class="col-md-4 col-md-offset-2">
+	<form action="{% url 'set_asn' %}" method="post">
+		{% csrf_token %}
+	    <select class="form-control" name="asn_id" style="margin-bottom: 10px;">
+  		{% for asn in asn_list %}
+	        <option value="{{ asn.id }}">{{ asn }}</option>
+		{% endfor %}
+	    </select>
+	    <button type="submit" class="btn btn-primary pull-right" value="Submit">Seleccionar</button>
+	</form>
+</div>
+{% endblock %}

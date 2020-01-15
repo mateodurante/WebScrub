@@ -1,0 +1,10 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+
+{% block app_title %}Guardar{% endblock %}
+
+{% block content %}
+	<form action="{% url 'asn_store' %}" method="POST">
+		{% include "asn_form.html" %}
+	</form>
+{% endblock %}

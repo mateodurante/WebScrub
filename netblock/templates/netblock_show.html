@@ -1,0 +1,12 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+
+{% block app_title %}Información{% endblock %}
+
+{% block content %}
+	<ul>
+		<li>Bloque de red: {{ netblock.network }}/{{ netblock.mask }}</li>
+		<li>ASN: {{ netblock.asn }}</li>
+		<li>Propietario: {{ netblock.asn.owner.username}}</li>
+	</ul>
+{% endblock %}

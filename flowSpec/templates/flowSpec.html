@@ -1,0 +1,30 @@
+{% extends "home/apps.html" %}
+
+{% block app_title %}Envío de FlowSpec{% endblock %}
+
+{% block content %}
+  {% include "flowspec_form.html" %}
+
+<script>
+    $(document).ready(function () {
+        radio = $('#id_policy_2');
+        dynamicField = $('#id_rate_limit');
+
+        dynamicField.hide();
+
+        $("#id_policy").click(
+         function() {
+            if ( $('#id_policy').val() == "rate-limit" ) {
+              dynamicField.show()
+            }
+            else{
+              dynamicField.hide()
+            }
+
+         });
+
+
+    });
+
+  </script>
+{% endblock %}

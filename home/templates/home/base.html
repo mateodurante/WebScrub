@@ -1,0 +1,16 @@
+{% load static %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html>
+<head>
+  {% include "home/head.html" %}
+</head>
+<body>
+  {% include "home/header.html" %}
+  {% block base_content %}{% endblock %}
+  {% include "home/contact.html" %}
+  {% include "home/footer.html" %}
+  {% block base_javascript %}
+  {% endblock  %}
+</body>
+</html>

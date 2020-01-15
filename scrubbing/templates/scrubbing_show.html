@@ -1,0 +1,19 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% block app_title %}Información{% endblock %}
+{% block content %}
+	<ul>
+		<li>Nombre: {{ scrubbing.name }}</li>
+		<li>Dirección IP: {{ scrubbing.address }}</li>
+		<li>
+			Redes asociadas:
+			<ul>
+				{% for n in scrubbing.netblock.all %}
+					<li>{{n}}</li>
+				{% endfor %}
+
+			</ul>
+
+		</li>
+	</ul>
+{% endblock %}
