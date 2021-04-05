@@ -15,14 +15,14 @@
                 <li><a href="{% url 'netblock_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-th-large" aria-hidden="true"></i><span>Bloques de red</span></a></li>
 								<li><a href="{% url 'scrubbing_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-hdd" aria-hidden="true"></i><span>Scrubbing center's</span></a></li>
 								<li><a href="{% url 'asn_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-globe" aria-hidden="true"></i><span>Sistemas autónomos</span></a></li>
-              {% if user.has_asn %}
+              {% if user.asn_set.count %}
                 <li><a href="/announceBGP"><i style="margin-right:12px;" class="fa fa-bullhorn" aria-hidden="true"></i><span>Anuncio BGP</span></a></li>
                 <li><a href="/flowSpec"><i style="margin-right:10px;" class="glyphicon glyphicon-stats" aria-hidden="true"></i><span>Envío de FlowSpec</span></a></li>
                 <li><a href="/announceList"><i style="margin-right:10px;" class="glyphicon glyphicon-list" aria-hidden="true"></i><span>Listado de anuncios</span></a></li>
               {% endif %}
-              {% if not user.is_superuser %}
-                <li><a href="/admin/"><i style="margin-right:10px;" class="glyphicon glyphicon-list" aria-hidden="true"></i><span>Panel Administrador</span></a></li>
-              {% endif %}
+              {#% if not user.is_superuser %#}
+                <!--<li><a href="/admin/"><i style="margin-right:10px;" class="glyphicon glyphicon-list" aria-hidden="true"></i><span>Panel Administrador</span></a></li>-->
+              {#% endif %#}
             </ul><br>
               </div>
           </div>
