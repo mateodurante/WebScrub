@@ -11,33 +11,46 @@
   <form action={% url 'Withdraw' %} method="post">
     {% csrf_token %}
 
-    {% if adata  %}
-        <h4>Anuncios de rutas</h4>
-    {%endif%}
+    <div class="form-group">
+      <h4>Anuncios de rutas</h4>
+    </div>
+    <div class="form-group">
+      {% if not adata  %}
+          <p>No existen rutas anunciadas</p>
+      {%endif%}
+    </div>
 
     {%for key,value in adata.items%}
-      <div>
+      <div class="form-group">
         <label class="checkbox-inline"><input type="checkbox" name="net_id" value="{{key}}">{{value}}</label>
       </div>
     {%endfor%}
 
-    {% if fdata %}
-          <h4>Anuncios de FlowSpec</h4>
-    {%endif%}
+    <div class="form-group">
+      <h4>Anuncios de FlowSpec</h4>
+    </div>
+    <div class="form-group">
+      {% if not fdata  %}
+          <p>No hay FlowSpec anunciados</p>
+      {%endif%}
+    </div>
+    
 
-      {%for key,value in fdata.items%}
-      	<div>
-      		<label class="checkbox-inline"><input type="checkbox" name="flows_id" value="{{key}}">{{value}}</label>
-      	</div>
-      {%endfor%}
+    {%for key,value in fdata.items%}
+      <div class="form-group">
+        <label class="checkbox-inline"><input type="checkbox" name="flows_id" value="{{key}}">{{value}}</label>
+      </div>
+    {%endfor%}
 
-      {%if fdata or adata%}
+    {%if fdata or adata%}
+      <div class="form-group">
         {% buttons %}
           <button type="submit" class="btn btn-primary" value="Submit">
             {% bootstrap_icon "trash" %}  Remover
           </button>
         {% endbuttons %}
-      {%endif%}
+      </div>
+    {%endif%}
   </form>
 
 {% endblock %}

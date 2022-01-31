@@ -48,6 +48,9 @@ def process_parameter(request, form):
             form.save()
             messages.success(request, "Bloque de red anunciado exitosamente.")
             return render(request, 'announceBGP.html', {'form': form})
+        else:
+            messages.success(request, f"El Scrub respondio un mensaje inesperado. {req.text}")
+            return render(request, 'announceBGP.html', {'form': form})
     except requests.exceptions.RequestException:
         messages.error(
             request, "Ha ocurrido un error en la comunicacion con el Scrub.")

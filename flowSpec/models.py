@@ -24,6 +24,7 @@ POLICY_CHOICES = (
 class FlowSpec(models.Model):
 
     def validate_port(value):
+        # =1024  >1024  >1024&<3500
         valids = ['=', '>']
         min_port = max_port = ''
         if value[0] in valids:

@@ -27,6 +27,7 @@ Campos adicionales de FlowSpec:
 
 from django.utils.translation import ugettext_lazy as _
 from announceBGP.models import AnnounceBGP
+import ipaddress
 
 
 class FlowSpecForm(ModelForm):
@@ -49,8 +50,11 @@ class FlowSpecForm(ModelForm):
         net_id = kwargs.pop('net_id')
         super(FlowSpecForm, self).__init__(*args, **kwargs)
         asn = Netblock.objects.get(id=net_id).asn
-        self.fields['announce'].queryset = asn.netblock_set.get(
-            id=net_id).announcebgp_set
+        self.fields['src_net'].widget.attrs['placeholder'] = "123.123.123.128/25"
+        self.fields['dst_net'].widget.attrs['placeholder'] = "123.123.123.128/25 (debe pertenecer al bloque de red anunciado)"
+        self.fields['src_port'].widget.attrs['placeholder'] = "=1024 | >1024 | >1024&<3500"
+        self.fields['dst_port'].widget.attrs['placeholder'] = "=1024 | >1024 | >1024&<3500"
+        self.fields['announce'].queryset = asn.netblock_set.get(id=net_id).announcebgp_set
 
         """
         #Para aplicar CSS a los campos
@@ -59,3 +63,23 @@ class FlowSpecForm(ModelForm):
             # No encuentro como modificar el nombre html del campo anounce
         }
         """
+
+    def clean_dst_net(self):
+        cleaned_data = self.clean()
+        print(cleaned_data)
+        dst_net = cleaned_data.get('dst_net')
+        announce = ipaddress.ip_network(cleaned_data.get('announce').block)
+
+        try:
+            ip = ipaddress.ip_network(dst_net)
+            if ip.is_private:
+                self.add_error('dst_net', 'Bloque de red ingresado no pertenece a un bloque público')
+            # con python3.7 esta la funcion subnet_of()
+            if not ip in announce.subnets(new_prefix=ip.prefixlen): # if is subnet_of
+                self.add_error('dst_net', "El bloque de red no se encuentra dentro del bloque de red anunciado seleccionado")
+        except ValueError:
+            self.add_error('dst_net', 'Bloque de red ingresado no es válido')
+        
+
+        return dst_net
+    
