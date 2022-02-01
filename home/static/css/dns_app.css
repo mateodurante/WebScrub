@@ -5,3 +5,8 @@
 .col-width-40 {
     width: 40%;
 }
+
+.active-menu {
+    background-color: #e5e5e5;
+    border-radius: 5px;
+}

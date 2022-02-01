@@ -22,7 +22,7 @@ class AnnounceBGP(models.Model):
             )
         if mask < 16 or mask > 26:
             raise ValidationError(
-                _('Mascara de red no válida (debe ser mayor que /16 y menor a /27)'),
+                _('Mascara de red no válida (debe ser mayor que /15 y menor a /27)'),
             )
 
     # Fields

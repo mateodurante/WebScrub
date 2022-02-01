@@ -36,13 +36,13 @@ class FlowSpecForm(ModelForm):
         fields = ['announce', 'src_net', 'dst_net', 'src_port',
                   'dst_port', 't_proto', 'policy', 'rate_limit']
         labels = {
-            "announce": "Bloques de redes anunciados",
+            "announce": "Bloques de redes anunciados *",
             "src_net": "Dirección de red de origen",
-            "dst_net": "Dirección de red de destino",
+            "dst_net": "Dirección de red de destino *",
             "src_port": "Puerto de origen",
             "dst_port": "Puerto de destino",
-            "t_proto": "Protocolo",
-            "policy": "Política de filtro",
+            "t_proto": "Protocolo *",
+            "policy": "Política de filtro *",
         }
 
     def __init__(self, *args, **kwargs):
