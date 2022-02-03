@@ -60,11 +60,17 @@ class AnnounceForm(ModelForm):
         cleaned_data = self.clean()
         netblock = ipaddress.ip_network(cleaned_data.get('netblock'))
         bblock = cleaned_data.get('block')
+        gre_ip = ipaddress.ip_address(cleaned_data.get('netblock').asn.gre_ip)
         try:
             block = ipaddress.ip_network(bblock)
             # con python3.7 esta la funcion subnet_of()
             if not block in netblock.subnets(new_prefix=block.prefixlen): # if is subnet_of
                 self.add_error('block', "El bloque de red no se encuentra dentro del bloque seleccionado")
+
+            # verificar que la IP del terminador GRE del usuario no este dentro del bloque publicado
+            # TODO agregar estas validaciones al modelo
+            if gre_ip in block:
+                self.add_error('block', f"La IP del terminador GRE del AS ({gre_ip}) esta dentro del bloque de red a anunciar")
         except ValueError:
             self.add_error('block', "El bloque de red no es válido")
             # return False
