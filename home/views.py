@@ -23,8 +23,6 @@ def apps(request):
 
 
 def set_asn(request):
-    print(request)
-    print(dir(request))
     if request.method == 'POST':
         asn_id = request.POST['asn_id']
         if check_asn(request, asn_id):

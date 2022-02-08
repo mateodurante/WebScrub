@@ -4,6 +4,7 @@ from asn.models import ASN
 
 
 class Netblock(models.Model):
+    id = models.AutoField(primary_key=True)
     network = models.CharField(max_length=15)
     mask = models.IntegerField()
     #owner = models.ManyToManyField(User)

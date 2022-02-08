@@ -16,6 +16,7 @@
 								<li class="{% if request.resolver_match.url_name in 'scrubbing_index' %}active-menu rounded{% endif %}"><a href="{% url 'scrubbing_index' %}"><i style="margin-right:12px;" class="nav-link glyphicon glyphicon-hdd" aria-hidden="true"></i><span>Scrubbing center's</span></a></li>
 								<li class="{% if request.resolver_match.url_name in 'asn_index' %}active-menu rounded{% endif %}"><a href="{% url 'asn_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-globe" aria-hidden="true"></i><span>Sistemas autónomos</span></a></li>
                 <li class="{% if request.resolver_match.url_name in 'netblock_index' %}active-menu rounded{% endif %}"><a href="{% url 'netblock_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-th-large" aria-hidden="true"></i><span>Bloques de red</span></a></li>
+                <li class="{% if request.resolver_match.url_name in 'peermessage_index' %}active-menu rounded{% endif %}"><a href="{% url 'peermessage_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></i><span>Conexiones con nodos</span></a></li>
               {% if user.asn_set.count %}
                 <li><span>Anuncios BGP y FlowSpec</span></li>
                 <li class="{% if request.resolver_match.url_name in 'announce_index' %}active-menu rounded{% endif %}"><a href="{% url 'announce_index' %}"><i style="margin-right:12px;" class="fa fa-bullhorn" aria-hidden="true"></i><span>Anuncio BGP</span></a></li>

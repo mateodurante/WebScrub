@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'home',
     'netblock',
     'scrubbing',
+    'peermessage',
     'django.contrib.sites',
 
     'django.contrib.admin',

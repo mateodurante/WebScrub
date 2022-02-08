@@ -1,5 +1,6 @@
 {% extends "home/apps.html" %}
 {% load bootstrap3 %}
+{% load helpers %}
 
 {% block app_title %}Listado de Scrubbing Center's{% endblock %}
 
@@ -23,6 +24,7 @@
 				<th>Nombre</th>
 				<th>Dirección IP</th>
 				<th>Dirección IP del terminador GRE</th>
+				<th>Estado del Peer</th>
 				<th>Acciones</th>
 			</thead>
 			<tbody>
@@ -31,6 +33,7 @@
 					<td>{{ scrubbing.name }}</td>
 					<td>{{ scrubbing.address }}</td>
 					<td>{{ scrubbing.gre_ip }}</td>
+					<td>{{ states|get_item:scrubbing.id|member:'neighbor_state' }}</td>
 					<td>
 						<div class="btn-group inline">
 		        			<a href="{% url 'scrubbing_show' scrubbing.id %}" class="btn btn-sm btn-primary ">Detalles</a>

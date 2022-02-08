@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import ScrubbingForm
 from .models import Scrubbing
+from peermessage.models import PeerMessage
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -9,7 +10,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 @login_required
 def index(request):
     scrubbing_list = Scrubbing.objects.all()
-    return render(request, 'scrubbing_index.html', {'scrubbings': scrubbing_list})
+    states = { s.id: PeerMessage.getLastState(s.address) for s in scrubbing_list }
+    return render(request, 'scrubbing_index.html', {'scrubbings': scrubbing_list, 'states': states})
 
 
 # GET /scrubbing/{id}

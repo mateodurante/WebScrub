@@ -90,6 +90,7 @@ class FlowSpec(models.Model):
                 params={'value': value},
             )
 
+    id = models.AutoField(primary_key=True)
     src_net = models.CharField(max_length=18, validators=[
                                validate_srcnet], blank=True, null=True)
     dst_net = models.CharField(max_length=18, validators=[validate_dstnet])
