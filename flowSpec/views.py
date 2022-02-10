@@ -11,32 +11,9 @@ import ipaddress
 from django.conf import settings
 from django.contrib import messages
 from netblock.models import Netblock
+from .models import FlowSpec
 
 # Create your views here.
-
-
-def generate_command(src_net, dst_net, src_port, dst_port, t_proto, policy, rate_limit):
-    """
-    Returns the flowspec command: Proceses the received parameters to generate a valid FlowSpec command.
-    """
-
-    t_protocol = str(t_proto).replace(",", " ")
-
-    if policy == 'rate-limit':
-        if not rate_limit:
-            rate_limit = '9600'
-        policy += " " + str(rate_limit)
-
-    sp = dp = ''
-    if src_port:
-        sp = "source-port {0}; ".format(src_port)
-    if dst_port:
-        dp = "destination-port {0}; ".format(dst_port)
-
-    command = "announce flow route {{ match {{ source {0}; destination {1}; {2} {3} protocol {4}; }} then {{ {5}; }} }}".format(
-        src_net, dst_net, dp, sp, t_protocol, policy)
-
-    return command
 
 
 def process_form(request, form):
@@ -55,8 +32,7 @@ def process_form(request, form):
     if not src_net:
         src_net = "0.0.0.0/0"
 
-    command = generate_command(
-        src_net, dst_net, src_port, dst_port, t_proto, policy, rate_limit)
+    command = FlowSpec.command(src_net, dst_net, src_port, dst_port, t_proto, policy, rate_limit)
 
     try:
         r = requests.post(settings.HTTP_API_URL, data={'command': command})

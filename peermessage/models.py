@@ -21,6 +21,8 @@ class PeerMessage(models.Model):
     neighbor_asn_peer = models.CharField(max_length=255)
     neighbor_direction = models.CharField(max_length=255)
     neighbor_state = models.CharField(max_length=255)
+    related_asn = models.CharField(max_length=255)
+    related_network = models.CharField(max_length=255)
     raw = models.TextField()
 
     def __str__(self):

@@ -25,6 +25,7 @@ urlpatterns = [
     re_path(r'^scrubbing/', include('scrubbing.urls')),
     re_path(r'^asn/', include('asn.urls')),
     re_path(r'^peermessage/', include('peermessage.urls')),
+    re_path(r'^apicli/', include('apicli.urls')),
     path('admin/', admin.site.urls),
     re_path(r'^auth/', include('django.contrib.auth.urls')),
     re_path(r'^accounts/', include('allauth.urls')),

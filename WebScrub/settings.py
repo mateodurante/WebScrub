@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'netblock',
     'scrubbing',
     'peermessage',
+    'apicli',
     'django.contrib.sites',
 
     'django.contrib.admin',

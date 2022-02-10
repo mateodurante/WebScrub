@@ -1,19 +1,28 @@
 {% extends "home/apps.html" %}
 {% load bootstrap3 %}
-{% block app_title %}Información{% endblock %}
+{% block app_title %}Información de {{ scrubbing.name }}{% endblock %}
 {% block content %}
-	<ul>
-		<li>Nombre: {{ scrubbing.name }}</li>
-		<li>Dirección IP: {{ scrubbing.address }}</li>
-		<li>
-			Redes asociadas:
-			<ul>
-				{% for n in scrubbing.netblock.all %}
-					<li>{{n}}</li>
-				{% endfor %}
 
-			</ul>
+<h3>Asignacion en WebScrub:</h3>
+<ul>
+	<li>Nombre: {{ scrubbing.name }}</li>
+	<li>Dirección IP: {{ scrubbing.address }}</li>
+	<li>
+		Redes asociadas:
+		<ul>
+			{% for n in scrubbing.netblock.all %}
+				<li>{{n}}</li>
+			{% endfor %}
 
-		</li>
-	</ul>
+		</ul>
+
+	</li>
+</ul>
+<h3>show neighbor summary</h3>
+<pre>{{ neighbor_summary }}</pre>
+<h3>show neighbor configuration</h3>
+<pre>{{ neighbor_configuration }}</pre>
+<h3>show neighbor extensive</h3>
+<pre>{{ neighbor_extensive }}</pre>
+
 {% endblock %}

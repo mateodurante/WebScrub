@@ -10,22 +10,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib import messages
 from .forms import AnnounceForm
-
-
-def check_asn(request, asn_id):
-    """
-    Returns boolean: checks if user has a specific asn by asn_id
-    """
-    return request.user.asn_set.filter(id=asn_id).exists()
-
-
-def generate_announce(net):
-    """
-    Returns announce command: Builds a string with the correct announce sintax.
-    This method is externally used.
-    """
-
-    return "announce route {0} next-hop self".format(net)
+from .models import AnnounceBGP
 
 
 def process_parameter(request, form):
@@ -37,8 +22,7 @@ def process_parameter(request, form):
     net_id = form.cleaned_data['netblock'].id
     asn = Netblock.objects.get(id=net_id).asn.asn
 
-    command = "announce route {0} as-path [{1}] next-hop self ".format(
-        net, asn)
+    command = AnnounceBGP.command(net, asn_list=[asn])
 
     try:
         req = requests.post(settings.HTTP_API_URL, data={'command': command})
@@ -49,11 +33,11 @@ def process_parameter(request, form):
             messages.success(request, "Bloque de red anunciado exitosamente.")
             return render(request, 'announceBGP.html', {'form': form})
         else:
-            messages.success(request, f"El Scrub respondio un mensaje inesperado. {req.text}")
+            messages.success(request, f"El ScrubCentral respondio un mensaje inesperado. {req.text}")
             return render(request, 'announceBGP.html', {'form': form})
     except requests.exceptions.RequestException:
         messages.error(
-            request, "Ha ocurrido un error en la comunicacion con el Scrub.")
+            request, "Ha ocurrido un error en la comunicacion con la API del ScrubCentral.")
 
     return render(request, 'announceBGP.html', {'form': form})
 

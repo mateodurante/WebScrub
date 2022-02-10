@@ -18,13 +18,15 @@
 				</div>
 			{% endif %}
 		</div>
-
 		<table class="table table-condensed table-bordered table-hover">
 			<thead>
 				<th>Nombre</th>
 				<th>Dirección IP</th>
-				<th>Dirección IP del terminador GRE</th>
-				<th>Estado del Peer</th>
+				<th>AS</th>
+				<th>Tiempo de actividad</th>
+				<th>Enviados</th>
+				<th>Recibidos</th>
+				<th>Estado</th>
 				<th>Acciones</th>
 			</thead>
 			<tbody>
@@ -32,8 +34,11 @@
 				<tr>
 					<td>{{ scrubbing.name }}</td>
 					<td>{{ scrubbing.address }}</td>
-					<td>{{ scrubbing.gre_ip }}</td>
-					<td>{{ states|get_item:scrubbing.id|member:'neighbor_state' }}</td>
+					<td>{{ states|get_item:scrubbing.address|get_item:'as' }}</td>
+					<td>{{ states|get_item:scrubbing.address|get_item:'uptime' }}</td>
+					<td>{{ states|get_item:scrubbing.address|get_item:'sent' }}</td>
+					<td>{{ states|get_item:scrubbing.address|get_item:'received' }}</td>
+					<td>{{ states|get_item:scrubbing.address|get_item:'state' }}</td>
 					<td>
 						<div class="btn-group inline">
 		        			<a href="{% url 'scrubbing_show' scrubbing.id %}" class="btn btn-sm btn-primary ">Detalles</a>

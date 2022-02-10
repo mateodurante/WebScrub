@@ -3,6 +3,10 @@ from netblock.models import Netblock
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 import ipaddress
+from django.db.models.signals import pre_delete 
+from django.dispatch import receiver
+from apicli.views import query
+from flowSpec.models import FlowSpec
 
 
 class AnnounceBGP(models.Model):
@@ -32,3 +36,32 @@ class AnnounceBGP(models.Model):
 
     def __str__(self):
         return self.block
+
+    @staticmethod
+    def check_asn(user, asn_id):
+        """
+        Returns boolean: checks if user has a specific asn by asn_id
+        """
+        return user.asn_set.filter(id=asn_id).exists()
+
+    @staticmethod
+    def command(net, asn_list=[], withdraw=False):
+        """
+        Returns announce command: Builds a string with the correct announce sintax.
+        This method is externally used.
+        """
+        action = 'withdraw' if withdraw else 'announce'
+        path = f"as-path [{' '.join(asn_list)}]" if asn_list else ""
+        return f"{action} route {net} {path} next-hop self"
+
+    def as_command(self, withdraw=False):
+        """
+        Returns announce command: Builds a string with the correct announce sintax.
+        """
+        return self.command(self.block, asn_list=[self.netblock.asn.asn], withdraw=withdraw)
+
+@receiver(pre_delete, sender=AnnounceBGP)
+def delete_repo(sender, instance, **kwargs):
+    for flow in instance.flowspec_set.all():
+        flow.delete()
+    query(instance.as_command(withdraw=True))

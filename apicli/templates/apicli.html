@@ -1,0 +1,66 @@
+{% extends "home/apps.html" %}
+
+{% block app_title %}Cli con la API{% endblock %}
+
+{% block content %}
+
+
+
+
+<div>
+    <form action="/run" method="POST" id="post-form">
+        <div class="input-group">
+            <label for="id_currentpw">Command to run: </label> <input type="" name="cmd" id="id_cmd" size="40"/>
+            <input class="btn btn-primary " type="submit" value="Enviar" onclick="run" />
+        </div>
+        {% csrf_token %}
+    </form>
+</div>
+<hr/>
+<div>
+    <p>stdout:</p>
+    <pre id="results"></pre>
+</div>
+<hr/>
+<div>
+    <p>stderr:</p>
+    <pre id="resultserr"></pre>
+</div>
+
+<script>
+// Submit post on submit
+$('#post-form').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!")  // sanity check
+    run();
+});
+
+// AJAX for posting
+function run() {
+    console.log("create post is working!") // sanity check
+    $.ajax({
+        url : "run", // the endpoint
+        type : "POST", // http method
+        data : { cmd : $('#id_cmd').val() }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            $('#cmd').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+            //$('#results').html(JSON.stringify(json, null, 2)); // add the error to the dom
+            $('#results').html(json.result.stdout); // add the error to the dom
+            $('#resultserr').html(json.result.stderr); // add the error to the dom
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("Oops! We have encountered an error: "+errmsg); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+</script>
+
+{% endblock %}

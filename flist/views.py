@@ -9,8 +9,6 @@ import requests
 from django.conf import settings
 from bson.objectid import ObjectId
 import time
-from flowSpec.views import generate_command
-from announceBGP.views import generate_announce
 from announceBGP.models import AnnounceBGP
 from flowSpec.models import FlowSpec
 from django.contrib import messages
@@ -29,29 +27,35 @@ def withdraw(request):
 
     try:
         for c_id in array_flows:
-            flow = findFlows(c_id, request)
-            r = requests.post(settings.HTTP_API_URL, data={
-                              'command': str(flow).replace("announce", "withdraw")})
-            if r.status_code == 200:
-                deleteFlow(request, c_id)
-            else:
-                messages.error(
-                    request, "Ha ocurrido un error (COD 2). Vuelva a intentarlo.")
+            # flow = findFlows(c_id, request)
+            f = FlowSpec.objects.get(id=c_id)
+            f.delete()
+            # r = requests.post(settings.HTTP_API_URL, data={
+            #                   'command': str(flow).replace("announce", "withdraw")})
+            # if r.status_code == 200:
+            #     deleteFlow(request, c_id)
+            # else:
+            #     messages.error(
+            #         request, "Ha ocurrido un error (COD 2). Vuelva a intentarlo.")
+        
 
         for n_id in array_announces:
-            announce = findAnnounces(n_id, request)
-            r = requests.post(settings.HTTP_API_URL, data={
-                              'command': str(announce).replace("announce", "withdraw")})
-            if r.status_code == 200:
-                deleteAnnounce(request, n_id)
-            else:
-                messages.error(
-                    request, "Ha ocurrido un error (COD 3). Vuelva a intentarlo.")
+            # announce = findAnnounces(n_id, request)
+            # r = requests.post(settings.HTTP_API_URL, data={
+            #                   'command': str(announce).replace("announce", "withdraw")})
+            # if r.status_code == 200:
+            #     deleteAnnounce(request, n_id)
+            # else:
+            #     messages.error(
+            #         request, "Ha ocurrido un error (COD 3). Vuelva a intentarlo.")
+            a = AnnounceBGP.objects.get(id=n_id)
+            a.delete()
 
         return render(request, 'announceList.html', {'fdata': findFlows('all', request), 'adata': findAnnounces('all', request)})
-    except:
+    except Exception as e:
         messages.error(
-            request, "Ha ocurrido un error (COD 4). Vuelva a intentarlo.")
+            request, f"Ha ocurrido un error (COD 4). Vuelva a intentarlo. {e}")
+        raise e
 
     return render(request, 'announceList.html')
 
@@ -92,11 +96,11 @@ def findAnnounces(n_id, request):
         for netblock in netblocks:
             announces = netblock.announcebgp_set.all()
             for a in announces:
-                adata[a.id] = generate_announce(a.block)
+                adata[a.id] = a.as_command()
     else:
         # No hay chequeo sobre si el anuncio es del usuario registrado
-        net = AnnounceBGP.objects.get(id=n_id)
-        return generate_announce(net)
+        a = AnnounceBGP.objects.get(id=n_id)
+        return a.as_command()
 
     return adata
 
@@ -117,14 +121,11 @@ def findFlows(f_id, request):
                 #fs = FlowSpec.objects.all()
                 fs = announce.flowspec_set.all()
                 for f in fs:
-                    command = generate_command(
-                        f.src_net, f.dst_net, f.src_port, f.dst_port, f.t_proto, f.policy, f.rate_limit)
-                    fdata[f.id] = command
+                    fdata[f.id] = f.as_command()
     else:
         # No hay chequeo sobre si el flowspec es del usuario registrado
         fs = FlowSpec.objects.get(id=f_id)
-        command = generate_command(
-            fs.src_net, fs.dst_net, fs.src_port, fs.dst_port, fs.t_proto, fs.policy, fs.rate_limit)
+        command = fs.as_command()
         return command
 
     return fdata

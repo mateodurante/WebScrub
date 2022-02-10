@@ -18,9 +18,9 @@
                             {% if user.asn_set.count %}
                                 <li><a href="{% url 'set_asn' %}"> <span class="glyphicon glyphicon-pencil"></span>   Elegir Sistema Autónomo</a></li>
                             {% endif %}
-                            {#% if not user.is_superuser %#}
+                            {% if user.is_superuser %}
                               <li><a href="/admin/"><i style="margin-right:10px;" class="glyphicon glyphicon-list" aria-hidden="true"></i><span>Panel Administrador</span></a></li>
-                            {#% endif %#}
+                            {% endif %}
                             <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>   Cerrar sesión</a></li>
                         </ul>
                     </li>

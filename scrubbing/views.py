@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import ScrubbingForm
 from .models import Scrubbing
 from peermessage.models import PeerMessage
+from apicli.views import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -10,7 +11,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 @login_required
 def index(request):
     scrubbing_list = Scrubbing.objects.all()
-    states = { s.id: PeerMessage.getLastState(s.address) for s in scrubbing_list }
+    # states = { s.address: PeerMessage.getLastState(s.address) for s in scrubbing_list }
+    states = query_show_neighbor_summary()
     return render(request, 'scrubbing_index.html', {'scrubbings': scrubbing_list, 'states': states})
 
 
@@ -18,7 +20,10 @@ def index(request):
 @login_required
 def show(request, id):
     scrubbing = Scrubbing.objects.get(id=id)
-    return render(request, 'scrubbing_show.html', {'scrubbing': scrubbing})
+    neighbor_summary = raw_show_neighbor_summary_of_peer(scrubbing.address)
+    neighbor_extensive = raw_show_neighbor_extensive_of_peer(scrubbing.address)
+    neighbor_configuration = raw_show_neighbor_configuration_of_peer(scrubbing.address)
+    return render(request, 'scrubbing_show.html', {'scrubbing': scrubbing, 'neighbor_summary': neighbor_summary, 'neighbor_extensive': neighbor_extensive, 'neighbor_configuration': neighbor_configuration})
 
 
 # GET /scrubbing/create

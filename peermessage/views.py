@@ -1,7 +1,6 @@
 from django.shortcuts import render
 # from .forms import ScrubbingForm
 from .models import PeerMessage
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -35,6 +34,7 @@ def flatten_dict(dd, separator='_', prefix=''):
 def add(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        print(data)
         PeerMessage(**flatten_dict(data)).save()
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'error': 'Invalid request'}, status=400)

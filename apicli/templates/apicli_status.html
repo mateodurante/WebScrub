@@ -1,0 +1,51 @@
+{% extends "home/apps.html" %}
+
+{% block app_title %}Cli con la API{% endblock %}
+
+{% block content %}
+
+
+
+
+<div>
+    <form action="/status" method="POST" id="post-form">
+        <div class="input-group">
+            <input class="btn btn-primary send" type="submit" value="Summary"  />
+            <input class="btn btn-primary send" type="submit" value="Configuration"  />
+            <input class="btn btn-primary send" type="submit" value="Extensive"  />
+        </div>
+        {% csrf_token %}
+    </form>
+</div>
+<hr/>
+<div>
+    <p>Salida del comando:</p>
+    <pre id="results"></pre>
+</div>
+
+<script>
+$('.send').click(function(e) {
+    e.preventDefault();
+    var val = $(this).val();
+    console.log('test');
+    $.ajax({
+        type: "POST",
+        url: "/apicli/status",
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'qn': val
+        },
+        success: function(json) {
+            $('#results').html(json.result.stdout);
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("Oops! We have encountered an error: "+errmsg); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+});
+
+</script>
+
+{% endblock %}
