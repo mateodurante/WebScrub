@@ -5,9 +5,8 @@ from .models import Scrubbing
 class ScrubbingForm(ModelForm):
     class Meta:
         model = Scrubbing
-        fields = ['name', 'address', 'gre_ip']
+        fields = ['name', 'address']
         labels = {
             "name": "Nombre",
-            "address": "Dirección IP",
-            "gre_ip": "Dirección de terminador GRE",
+            "address": "Dirección IP"
         }

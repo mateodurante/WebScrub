@@ -6,7 +6,6 @@
 {% block content %}
 	<ul>
 		<li>ASN: {{ asn.asn }}</li>
-		<li>Dirección IP del terminador GRE: {{ asn.gre_ip }}</li>
 		<li>Redes asociadas:
 			<ul>
 				{% for n in netblocks %}

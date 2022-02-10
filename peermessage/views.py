@@ -34,7 +34,6 @@ def flatten_dict(dd, separator='_', prefix=''):
 def add(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
         PeerMessage(**flatten_dict(data)).save()
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'error': 'Invalid request'}, status=400)

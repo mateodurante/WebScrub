@@ -10,8 +10,13 @@
 	<li>
 		Redes asociadas:
 		<ul>
-			{% for n in scrubbing.netblock.all %}
-				<li>{{n}}</li>
+			{% for a in scrubbing.asns.all %}
+				<li>{{a}}</li>
+				<ul>
+					{% for r in a.netblock_set.all %}
+						<li>{{r}}</li>
+					{% endfor %}
+				</ul>
 			{% endfor %}
 
 		</ul>

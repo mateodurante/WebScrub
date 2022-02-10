@@ -21,14 +21,24 @@
 		<table class="table table-condensed table-bordered table-hover">
 			<thead>
 				<th>ASN</th>
-				<th>Dirección IP del terminador GRE</th>
+				<th>Scrubbing Centers </th>
+				<th>Bloques de Red</th>
 				<th>Acciones</th>
 			</thead>
 			<tbody>
 			{% for a in asn %}
 				<tr>
 					<td>{{ a.asn }}</td>
-					<td>{{ a.gre_ip }}</td>
+					<td><ul>
+						{% for s in a.scrubbing.all %}
+							<li>{{ s }}</li>
+						{% endfor %}
+					</ul></td>
+					<td><ul>
+						{% for n in a.netblock_set.all %}
+							<li>{{ n }}</li>
+						{% endfor %}
+					</ul></td>
 					<td>
 						<div class="btn-group inline">
 		        			<a href="{% url 'asn_show' a.id %}" class="btn btn-sm btn-primary ">Detalles</a>
