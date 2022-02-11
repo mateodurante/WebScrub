@@ -13,7 +13,7 @@
         <div class="col-md-4 col-md-offset-4">
             <div class="login-panel panel panel-default">
                 <div class="panel-body">
-                    <form method="post" action="{% url 'account_logout' %}">
+                    <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                       <fieldset>
                         {% if redirect_field_value %}

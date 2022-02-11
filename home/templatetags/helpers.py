@@ -8,7 +8,9 @@ def order_by_order(queryset):
 
 @register.filter
 def get_item(dictionary, key):
-    return dictionary.get(key)
+    if type(dictionary) == dict:
+        return dictionary.get(key, '')
+    return ''
 
 @register.filter
 def member(obj, name):

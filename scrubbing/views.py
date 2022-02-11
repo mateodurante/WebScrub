@@ -13,6 +13,7 @@ def index(request):
     scrubbing_list = Scrubbing.objects.all()
     # states = { s.address: PeerMessage.getLastState(s.address) for s in scrubbing_list }
     states = query_show_neighbor_summary()
+    # print(scrubbing_list, states)
     return render(request, 'scrubbing_index.html', {'scrubbings': scrubbing_list, 'states': states})
 
 

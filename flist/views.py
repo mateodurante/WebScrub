@@ -1,14 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import Http404
-import http.client
-import json
-import requests
-from django.conf import settings
-from bson.objectid import ObjectId
-import time
 from announceBGP.models import AnnounceBGP
 from flowSpec.models import FlowSpec
 from django.contrib import messages

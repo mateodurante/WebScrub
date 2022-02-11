@@ -1,6 +1,3 @@
-
-import ipaddress
-import requests
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -11,6 +8,8 @@ from django.db import models
 from django.contrib import messages
 from .forms import AnnounceForm
 from .models import AnnounceBGP
+import ipaddress
+import requests
 
 
 def process_parameter(request, form):
