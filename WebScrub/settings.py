@@ -166,3 +166,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # API FLASK EXABGP ANNOUNCES
 HTTP_API_URL = "http://localhost:5000"
+
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
