@@ -8,4 +8,5 @@ urlpatterns = [
             url(r'^([0-9]+)$', views.show, name='asn_show'),
             url(r'^([0-9]+)/edit$', views.edit, name='asn_edit'),
             url(r'^([0-9]+)/delete$', views.delete, name='asn_delete'),
+            url(r'^getgreip/([0-9]+)$', views.getgreip, name='asn_getgreip'),
 ]

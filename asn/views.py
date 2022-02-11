@@ -3,6 +3,8 @@ from .forms import ASNForm
 from .models import ASN
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 
 @login_required
@@ -72,3 +74,11 @@ def edit(request, id):
                     request, "Ha ocurrido un error. No se ha podido actualizar. Vuelva a intentarlo.")
 
     return render(request, 'asn_edit.html', {'form': form, 'asn_id': id})
+
+@csrf_exempt
+def getgreip(request, asn):
+    if request.method == 'GET':
+        asnobj = ASN.objects.get(asn=asn)
+        return JsonResponse({'gre_ip': asnobj.gre_ip, 'asn': asnobj.asn})
+    else:
+        return JsonResponse({})

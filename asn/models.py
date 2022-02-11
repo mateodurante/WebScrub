@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class ASN(models.Model):
     id = models.AutoField(primary_key=True)
     asn = models.CharField(max_length=10)
+    gre_ip = models.CharField(max_length=15)
     scrubbing = models.ManyToManyField(Scrubbing, related_name="asns")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 

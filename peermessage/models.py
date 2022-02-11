@@ -25,9 +25,6 @@ class PeerMessage(models.Model):
     related_network = models.CharField(max_length=255)
     raw = models.TextField()
 
-    def __str__(self):
-        return self.name
-
 
     def getLastState(address_peer):
         return PeerMessage.objects.filter(neighbor_address_peer=address_peer, type='state').order_by('-time')[0]

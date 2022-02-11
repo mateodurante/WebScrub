@@ -146,7 +146,13 @@ def run(request):
 def status(request):
     if request.method == 'POST':
         qn = request.POST['qn']
-        querys = {'Summary':'show neighbor summary', 'Configuration':'show neighbor configuration', 'Extensive':'show neighbor extensive'}
+        querys = {
+            'Summary':'show neighbor summary', 
+            'Configuration':'show neighbor configuration', 
+            'Extensive':'show neighbor extensive',
+            'Adj-RIB out':'show adj-rib out',
+            'Adj-RIB in':'show adj-rib in',
+            }
         if qn in querys.keys():
             result = query(querys[qn])
             return JsonResponse({'result': result, 'cmd': qn})

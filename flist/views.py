@@ -27,27 +27,11 @@ def withdraw(request):
 
     try:
         for c_id in array_flows:
-            # flow = findFlows(c_id, request)
             f = FlowSpec.objects.get(id=c_id)
             f.delete()
-            # r = requests.post(settings.HTTP_API_URL, data={
-            #                   'command': str(flow).replace("announce", "withdraw")})
-            # if r.status_code == 200:
-            #     deleteFlow(request, c_id)
-            # else:
-            #     messages.error(
-            #         request, "Ha ocurrido un error (COD 2). Vuelva a intentarlo.")
         
 
         for n_id in array_announces:
-            # announce = findAnnounces(n_id, request)
-            # r = requests.post(settings.HTTP_API_URL, data={
-            #                   'command': str(announce).replace("announce", "withdraw")})
-            # if r.status_code == 200:
-            #     deleteAnnounce(request, n_id)
-            # else:
-            #     messages.error(
-            #         request, "Ha ocurrido un error (COD 3). Vuelva a intentarlo.")
             a = AnnounceBGP.objects.get(id=n_id)
             a.delete()
 
@@ -87,8 +71,6 @@ def deleteAnnounce(request, n_id):
 def findAnnounces(n_id, request):
     adata = {}
     user = request.user
-    #asn_id = request.session['asn_id']
-    #netblocks = user.asn_set.get(id=asn_id).netblock_set
     netblocks = [netblock for asn in user.asn_set.all()
                  for netblock in asn.netblock_set.all()]
     # Necesito los anuncios que me pertenecen solamente
@@ -109,8 +91,6 @@ def findFlows(f_id, request):
     fdata = {}
 
     user = request.user
-    #asn_id = request.session['asn_id']
-    #netblocks = user.asn_set.get(id=asn_id).netblock_set
     netblocks = [netblock for asn in user.asn_set.all()
                  for netblock in asn.netblock_set.all()]
 
@@ -118,7 +98,6 @@ def findFlows(f_id, request):
         for netblock in netblocks:
             announces = netblock.announcebgp_set.all()
             for announce in announces:
-                #fs = FlowSpec.objects.all()
                 fs = announce.flowspec_set.all()
                 for f in fs:
                     fdata[f.id] = f.as_command()

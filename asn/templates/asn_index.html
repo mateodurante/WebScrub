@@ -21,6 +21,7 @@
 		<table class="table table-condensed table-bordered table-hover">
 			<thead>
 				<th>ASN</th>
+				<th>Dirección IP del terminador GRE</th>
 				<th>Scrubbing Centers </th>
 				<th>Bloques de Red</th>
 				<th>Acciones</th>
@@ -29,6 +30,7 @@
 			{% for a in asn %}
 				<tr>
 					<td>{{ a.asn }}</td>
+					<td>{{ a.gre_ip }}</td>
 					<td><ul>
 						{% for s in a.scrubbing.all %}
 							<li>{{ s }}</li>

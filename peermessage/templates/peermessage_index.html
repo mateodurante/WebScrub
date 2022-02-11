@@ -20,26 +20,24 @@
 
 		<table class="table table-condensed table-bordered table-hover">
 			<thead>
-				<th>time</th>
-				<th>address</th>
-				<th>counter</th>
-				<th>type</th>
-				<th>host</th>
-				<th>neighbor_address_local</th>
-				<th>neighbor_address_peer</th>
-				<th>neighbor_asn_local</th>
-				<th>neighbor_asn_peer</th>
-				<th>neighbor_direction</th>
-				<th>neighbor_state</th>
-				<th>related_asn</th>
-				<th>related_network</th>
+				<th>Fecha</th>
+				<th>#</th>
+				<th>Tipo</th>
+				<th>Equipo</th>
+				<th>IP Local</th>
+				<th>IP Remota</th>
+				<th>ASN Local</th>
+				<th>ASN Remoto</th>
+				<th>Dirección</th>
+				<th>Estado</th>
+				<th>ASN Relacionado</th>
+				<th>Red Relacionada</th>
 				<th>Acciones</th>
 			</thead>
 			<tbody>
 			{% for pm in peermessages %}
 				<tr>
 					<td>{{ pm.time }}</td>
-					<td>{{ pm.address }}</td>
 					<td>{{ pm.counter }}</td>
 					<td>{{ pm.type }}</td>
 					<td>{{ pm.host }}</td>
