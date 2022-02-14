@@ -12,7 +12,7 @@
             <div name="Sidebar">
               <div class="text-left"><h4>Utilidades</h4></div>
               <ul class="nav nav-pills nav-stacked">
-                <li><span>Scrubing centers y AS</span></li>
+                <li><span>Scrubbing centers y AS</span></li>
 								<li class="{% if request.resolver_match.url_name in 'scrubbing_index' %}active-menu rounded{% endif %}"><a href="{% url 'scrubbing_index' %}"><i style="margin-right:12px;" class="nav-link glyphicon glyphicon-hdd" aria-hidden="true"></i><span>Scrubbing center's</span></a></li>
 								<li class="{% if request.resolver_match.url_name in 'asn_index' %}active-menu rounded{% endif %}"><a href="{% url 'asn_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-globe" aria-hidden="true"></i><span>Sistemas autónomos</span></a></li>
                 <li class="{% if request.resolver_match.url_name in 'netblock_index' %}active-menu rounded{% endif %}"><a href="{% url 'netblock_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-th-large" aria-hidden="true"></i><span>Bloques de red</span></a></li>
@@ -20,8 +20,10 @@
                 {% if user.is_superuser %}
                 <li class="{% if request.resolver_match.url_name in 'apicli_run' %}active-menu rounded{% endif %}"><a href="{% url 'apicli_run' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-console" aria-hidden="true"></i><span>API Cli</span></a></li>
                 {% endif %}
-                <li class="{% if request.resolver_match.url_name in 'apicli_status' %}active-menu rounded{% endif %}"><a href="{% url 'apicli_status' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-signal" aria-hidden="true"></i><span>Estados</span></a></li>
-                <li class="{% if request.resolver_match.url_name in 'peermessage_index' %}active-menu rounded{% endif %}"><a href="{% url 'peermessage_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></i><span>Mensajes</span></a></li>
+                <li class="{% if request.resolver_match.url_name in 'apicli_status' %}active-menu rounded{% endif %}"><a href="{% url 'apicli_status' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-signal" aria-hidden="true"></i><span>Estado BGP central</span></a></li>
+                <li class="{% if request.resolver_match.url_name in 'peermessage_shownodestatus' %}active-menu rounded{% endif %}"><a href="{% url 'peermessage_shownodestatus' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-list-alt" aria-hidden="true"></i><span>Estados de nodos</span></a></li>
+                <li class="{% if request.resolver_match.url_name in 'peermessage_shownodeifacestatus' %}active-menu rounded{% endif %}"><a href="{% url 'peermessage_shownodeifacestatus' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-random" aria-hidden="true"></i><span>Interfaces en Nodos</span></a></li>
+                <li class="{% if request.resolver_match.url_name in 'peermessage_index' %}active-menu rounded{% endif %}"><a href="{% url 'peermessage_index' %}"><i style="margin-right:12px;" class="glyphicon glyphicon-envelope" aria-hidden="true"></i><span>Mensajes</span></a></li>
               {% if user.asn_set.count %}
                 <li><span>Anuncios BGP y FlowSpec</span></li>
                 <li class="{% if request.resolver_match.url_name in 'announce_index' %}active-menu rounded{% endif %}"><a href="{% url 'announce_index' %}"><i style="margin-right:12px;" class="fa fa-bullhorn" aria-hidden="true"></i><span>Anuncio BGP</span></a></li>

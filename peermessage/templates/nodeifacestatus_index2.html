@@ -1,0 +1,144 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% load helpers %}
+
+{% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
+
+{% block content %}
+
+<div class="btn-group" id="status" data-toggle="buttons">
+	<p>Actualización automática </p>
+	<label class="btn btn-default btn-on-1 btn-xs active">
+	<input type="radio" value="1" id="btnon" name="multifeatured_module[module_id][status]" checked="checked">ON</label>
+	<label class="btn btn-default btn-off'1 btn-xs ">
+	<input type="radio" value="0" id="btnoff" name="multifeatured_module[module_id][status]">OFF</label>
+</div>
+<hr>
+	{% for node, ifaces in nodes.items %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Nodo de limpieza: {{ ifaces.items|as_list|first|get_item:1|member:'hostname' }} ({{ node }})</strong>
+				{% if user.is_superuser %}
+					<div class="pull-right">
+						<div class="btn-rigth">
+							<a href="" class="btn btn-xs btn-default">
+							<span class="fa fa-plus-circle fa-fw"></span>Agregar pm
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		
+			<table class="table table-condensed table-bordered table-hover">
+				<thead>
+					<th>Interfaz</th>
+					<th>Fecha</th>
+					<th>Estado</th>
+					<th>MTU</th>
+					<th>Rx Packets</th>
+					<th>Tx Packets</th>
+					<th>Rx Bytes</th>
+					<th>Tx Bytes</th>
+					<th>Rx Errors</th>
+					<th>Tx Errors</th>
+					<th>Detalles</th>
+				</thead>
+				<tbody>
+				{% for name, status in ifaces.items %}
+                    {% with status.data|json_loads as datadict %}
+					<tr>
+						<td class="cell" id="{{ status.address }}~{{ status.name }}~name">{{ status.name }}</td>
+						<td class="cell" id="{{ status.address }}~{{ status.name }}~time">{{ status.time|date:"Y-m-d H:i:s" }}</td>
+						<td class="cell" id="{{ status.address }}~{{ status.name }}~data~operstate">{{ datadict.operstate }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~mtu">{{ datadict.mtu }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_packets">{{ datadict.statistics.rx_packets }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_packets">{{ datadict.statistics.tx_packets }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_bytes">{{ datadict.statistics.rx_bytes|convert_size }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_bytes">{{ datadict.statistics.tx_bytes|convert_size }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_errors">{{ datadict.statistics.rx_errors }}</td>
+                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_errors">{{ datadict.statistics.tx_errors }}</td>
+						<td class="cellButton" id="{{ status.address }}~{{ status.name }}"><button type="button" class="btn btn-primary open-raw" data-body="{{ status.data }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+					</tr>
+                    {% endwith %}
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endfor %}
+
+<!-- Modal -->
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-xl" style="min-width: 80%;" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <h4 class="modal-title" id="myModalLabel">Raw data</h4>
+		</div>
+		<div class="modal-body">
+		  <pre id="rawcontent">
+		  </pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<script>
+	$(document).on("click", ".open-raw", function () {
+     var raw_data = $(this).data('body');
+     console.log(raw_data);
+     $(".modal-body #rawcontent").html( JSON.stringify(raw_data, null, 2) );
+});
+
+function findProp(obj, prop, defval){
+    if (typeof defval == 'undefined') defval = null;
+    prop = prop.split('~');
+    for (var i = 0; i < prop.length; i++) {
+        if(typeof obj[prop[i]] == 'undefined')
+            return defval;
+        obj = obj[prop[i]];
+    }
+    return obj;
+}
+
+function bytesToSize(bytes) {
+    var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 B';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+//    console.log(i);
+//    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+	var x = bytes / Math.pow(1024, i);
+    return x.toFixed(2) + ' ' + sizes[i];
+}
+
+var cells = $('.cell');
+var cellButtons = $('.cellButton');
+
+function get_fb(){
+	if (document.getElementById('btnon').checked) {
+		var feedback = $.ajax({
+			type: "GET",
+			url: "/peermessage/shownodeifacestatusdata",
+			async: false
+		}).success(function(){
+		}).responseText;
+		feedback = JSON.parse(feedback);
+		cells.each(function(i, obj) {
+			new_data = findProp(feedback['nodes'], obj.id, '-');
+			if (obj.id.includes('bytes')){
+				new_data = bytesToSize(new_data);
+			}
+			obj.innerHTML = new_data;
+		});
+		cellButtons.each(function(i, obj) {
+			new_data = findProp(feedback['nodes'], obj.id, '-');
+			obj.children[0].setAttribute('data-body' , JSON.stringify(new_data, null, 2));
+		});
+	}
+}
+setInterval(get_fb, 5000);
+</script>
+{% endblock %}

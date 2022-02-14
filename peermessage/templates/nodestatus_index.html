@@ -1,0 +1,79 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% load helpers %}
+
+{% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
+
+{% block content %}
+	{% for node, cmds in nodes.items %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Nodo de limpieza: {{ cmds.items|as_list|first|get_item:1|member:'hostname' }} ({{ node }})</strong>
+				{% if user.is_superuser %}
+					<div class="pull-right">
+						<div class="btn-rigth">
+							<a href="" class="btn btn-xs btn-default">
+							<span class="fa fa-plus-circle fa-fw"></span>Agregar pm
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		
+			<table class="table table-condensed table-bordered table-hover">
+				<thead>
+					<!-- <th>Equipo</th>
+					<th>IP Nodo</th> -->
+					<th>Comando</th>
+					<th>Fecha</th>
+					<th>Return Code</th>
+					<th>Std. Out</th>
+					<th>Std. Error</th>
+				</thead>
+				<tbody>
+				{% for cmd, status in cmds.items %}
+					<tr>
+						<!-- <td>{{ status.hostname }}</td>
+						<td>{{ status.address }}</td> -->
+						<td>{{ status.cmd }}</td>
+						<td>{{ status.time }}</td>
+						<td>{{ status.result_returncode }}</td>
+						<td><button type="button" {% if not status.result_stdout %}disabled{% endif %} class="btn btn-primary open-raw" data-body="{{ status.result_stdout }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+						<td><button type="button" {% if not status.result_stderr %}disabled{% endif %} class="btn btn-primary open-raw" data-body="{{ status.result_stderr }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+						<!-- <td>
+							<button type="button"  class="btn btn-primary open-raw" data-body="{{ pm.raw }}" data-toggle="modal" data-target="#myModal">Ver mensaje</button>
+						</td> -->
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endfor %}
+
+<!-- Modal -->
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-xl" style="min-width: 80%;" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <h4 class="modal-title" id="myModalLabel">Raw data</h4>
+		</div>
+		<div class="modal-body">
+		  <pre id="rawcontent">
+		  </pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<script>
+	$(document).on("click", ".open-raw", function () {
+     var raw_data = atob($(this).data('body'));
+     $(".modal-body #rawcontent").html( raw_data );
+});
+</script>
+{% endblock %}

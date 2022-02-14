@@ -1,0 +1,88 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% load helpers %}
+
+{% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
+
+{% block content %}
+	{% for node, ifaces in nodes.items %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Nodo de limpieza: {{ ifaces.items|as_list|first|get_item:1|member:'hostname' }} ({{ node }})</strong>
+				{% if user.is_superuser %}
+					<div class="pull-right">
+						<div class="btn-rigth">
+							<a href="" class="btn btn-xs btn-default">
+							<span class="fa fa-plus-circle fa-fw"></span>Agregar pm
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		
+			<table class="table table-condensed table-bordered table-hover">
+				<thead>
+					<th>Interfaz</th>
+					<th>Fecha</th>
+					<th>Estado</th>
+					<th>MTU</th>
+					<th>Rx Packets</th>
+					<th>Tx Packets</th>
+					<th>Rx Bytes</th>
+					<th>Tx Bytes</th>
+					<th>Rx Errors</th>
+					<th>Tx Errors</th>
+					<th>Detalles</th>
+				</thead>
+				<tbody>
+				{% for name, status in ifaces.items %}
+                    {% with status.data|json_loads as datadict %}
+					<tr>
+						<td>{{ status.name }}</td>
+						<td>{{ status.time|date:"Y-m-d H:i:s" }}</td>
+						<td>{{ datadict.operstate }}</td>
+                        <td>{{ datadict.mtu }}</td>
+                        <td>{{ datadict.statistics.rx_packets|convert_size }}</td>
+                        <td>{{ datadict.statistics.tx_packets|convert_size }}</td>
+                        <td>{{ datadict.statistics.rx_bytes|convert_size }}</td>
+                        <td>{{ datadict.statistics.tx_bytes|convert_size }}</td>
+                        <td>{{ datadict.statistics.rx_errors }}</td>
+                        <td>{{ datadict.statistics.tx_errors }}</td>
+						<td><button type="button" class="btn btn-primary open-raw" data-body="{{ status.data }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+					</tr>
+                    {% endwith %}
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endfor %}
+
+<!-- Modal -->
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-xl" style="min-width: 80%;" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <h4 class="modal-title" id="myModalLabel">Raw data</h4>
+		</div>
+		<div class="modal-body">
+		  <pre id="rawcontent">
+		  </pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<script>
+	$(document).on("click", ".open-raw", function () {
+    //  var raw_data = atob($(this).data('body'));
+     var raw_data = $(this).data('body');
+     console.log(raw_data);
+     $(".modal-body #rawcontent").html( JSON.stringify(raw_data, null, 2) );
+});
+</script>
+{% endblock %}

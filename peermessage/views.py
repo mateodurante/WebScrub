@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # from .forms import ScrubbingForm
-from .models import PeerMessage
+from .models import PeerMessage, PeerStatus, PeerIfaceStatus
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -34,7 +34,78 @@ def flatten_dict(dd, separator='_', prefix=''):
 def add(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        PeerMessage(**flatten_dict(data)).save()
+        # PeerMessage(**flatten_dict(data)).save()
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+# POST /peermessage/nodestatus
+@csrf_exempt
+def nodestatus(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        address = get_client_ip(request)
+        for d in data['cmds']:
+            try:
+                to_save = flatten_dict(d)
+                to_save.update({'address': address})
+                PeerStatus.objects.update_or_create(
+                    address=to_save['address'], cmd=to_save['cmd'],
+                    defaults=to_save,
+                )
+            except Exception as e:
+                print(f'Error al guardar PeerStatus {to_save}')
+                raise e
+
+        for d in data['ifaces']:
+            try:
+                d.update({'address': address})
+                d['data'] = json.dumps(d['data'])
+                to_save = flatten_dict(d)
+                PeerIfaceStatus.objects.update_or_create(
+                    address=to_save['address'], name=to_save['name'],
+                    defaults=to_save,
+                )
+            except Exception as e:
+                print(f'Error al guardar PeerIfaceStatus {to_save}')
+                raise e
+                
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# GET /peermessage/shownodestatus
+@login_required
+def shownodestatus(request):
+    if request.method == 'GET':
+        status = PeerStatus.getAllStatus()
+        return render(request, 'nodestatus_index.html', {'nodes': status})
+    # return html error
+
+
+# GET /peermessage/shownodeifacestatus
+@login_required
+def shownodeifacestatus(request):
+    if request.method == 'GET':
+        status = PeerIfaceStatus.getAllStatus()
+        return render(request, 'nodeifacestatus_index2.html', {'nodes': status})
+    # return html error
+
+# GET /peermessage/shownodeifacestatusdata
+@login_required
+def shownodeifacestatusdata(request):
+    if request.method == 'GET':
+        status = PeerIfaceStatus.getAllStatusValues()
+        return JsonResponse({'nodes': status})
+    # return html error
+
+    
 

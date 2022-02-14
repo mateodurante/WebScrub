@@ -127,7 +127,7 @@ def raw_show_neighbor_extensive_of_peer(peer):
     except Exception as e:
         raise e
 
-# POST /apicli/add
+# POST /apicli/run
 @login_required
 @permission_required('apicli.run', raise_exception=True)
 @csrf_exempt
@@ -140,7 +140,7 @@ def run(request):
         return render(request, 'apicli.html')
 
 
-# POST /apicli/add
+# POST /apicli/status
 @login_required
 @csrf_exempt
 def status(request):
