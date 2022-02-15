@@ -104,9 +104,10 @@ class PeerIfaceStatus(models.Model):
         for node in nodes:
             for name in ifaces:
                 pis = PeerIfaceStatus.getLastStatus(node, name)
-                if not node in status:
-                    status[node] = {}
-                status[node][name] = pis
+                if pis:
+                    if not node in status:
+                        status[node] = {}
+                    status[node][name] = pis
         return status
 
     def getAllStatusValues():
@@ -117,7 +118,8 @@ class PeerIfaceStatus(models.Model):
         for node in nodes:
             for name in ifaces:
                 pis = PeerIfaceStatus.getLastStatusValues(node, name)
-                if not node in status:
-                    status[node] = {}
-                status[node][name] = pis
+                if pis:
+                    if not node in status:
+                        status[node] = {}
+                    status[node][name] = pis
         return status

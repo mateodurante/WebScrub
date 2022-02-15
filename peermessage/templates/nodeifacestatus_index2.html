@@ -46,7 +46,7 @@
 				<tbody>
 				{% for name, status in ifaces.items %}
                     {% with status.data|json_loads as datadict %}
-					<tr>
+					<tr id="{{ status.address }}~{{ status.name }}">
 						<td class="cell" id="{{ status.address }}~{{ status.name }}~name">{{ status.name }}</td>
 						<td class="cell" id="{{ status.address }}~{{ status.name }}~time">{{ status.time|date:"Y-m-d H:i:s" }}</td>
 						<td class="cell" id="{{ status.address }}~{{ status.name }}~data~operstate">{{ datadict.operstate }}</td>
@@ -114,8 +114,49 @@ function bytesToSize(bytes) {
     return x.toFixed(2) + ' ' + sizes[i];
 }
 
+
+function fade_element(elem){
+	//Color row background in HSL space (easier to manipulate fading)
+	document.getElementById(elem).classList.remove('color-in');
+	document.getElementById(elem).classList.remove('color-out');
+	document.getElementById(elem).classList.add('color-in');
+	setTimeout(function(){
+		document.getElementById(elem).classList.add('color-out');
+	}, 1000);
+}
+
 var cells = $('.cell');
 var cellButtons = $('.cellButton');
+
+function do_all(feedback){
+	feedback = JSON.parse(feedback);
+	cells.each(function(i, obj) {
+		new_data = findProp(feedback['nodes'], obj.id, '-');
+		if (obj.id.includes('bytes')){
+			new_data = bytesToSize(new_data);
+		}
+		if (obj.id.includes('operstate')){
+			document.getElementById(obj.id).parentNode.classList.remove('up');
+			document.getElementById(obj.id).parentNode.classList.remove('down');
+			document.getElementById(obj.id).parentNode.classList.remove('unknown');
+			if (new_data == "unknown"){
+				document.getElementById(obj.id).parentNode.classList.add('unknown');
+			} else if (new_data == "up"){
+				document.getElementById(obj.id).parentNode.classList.add('up');
+			} else {
+				document.getElementById(obj.id).parentNode.classList.add('down');
+			}
+		}
+		if (new_data != obj.innerHTML){
+			obj.innerHTML = new_data;
+			fade_element(obj.id);
+		}
+	});
+	cellButtons.each(function(i, obj) {
+		new_data = findProp(feedback['nodes'], obj.id, '-');
+		obj.children[0].setAttribute('data-body' , JSON.stringify(new_data, null, 2));
+	});
+}
 
 function get_fb(){
 	if (document.getElementById('btnon').checked) {
@@ -125,20 +166,14 @@ function get_fb(){
 			async: false
 		}).success(function(){
 		}).responseText;
-		feedback = JSON.parse(feedback);
-		cells.each(function(i, obj) {
-			new_data = findProp(feedback['nodes'], obj.id, '-');
-			if (obj.id.includes('bytes')){
-				new_data = bytesToSize(new_data);
-			}
-			obj.innerHTML = new_data;
-		});
-		cellButtons.each(function(i, obj) {
-			new_data = findProp(feedback['nodes'], obj.id, '-');
-			obj.children[0].setAttribute('data-body' , JSON.stringify(new_data, null, 2));
-		});
+		do_all(feedback);
 	}
 }
 setInterval(get_fb, 5000);
+
+// on document ready
+$(document).ready(function(){
+	get_fb();
+});
 </script>
 {% endblock %}

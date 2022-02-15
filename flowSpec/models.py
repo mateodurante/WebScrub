@@ -138,6 +138,10 @@ class FlowSpec(models.Model):
 
         return self.command(self.src_net, self.dst_net, self.src_port, self.dst_port, self.t_proto, self.policy, self.rate_limit, withdraw=withdraw)
 
-@receiver(pre_delete, sender=FlowSpec)
-def delete_repo(sender, instance, **kwargs):
-    query(instance.as_command(withdraw=True))
+# @receiver(pre_delete, sender=FlowSpec)
+# def delete_repo(sender, instance, **kwargs):
+#     query(instance.as_command(withdraw=True))
+
+    def delete_gracefull(self):
+        query(self.as_command(withdraw=True))
+        return self.delete()

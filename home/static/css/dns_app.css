@@ -25,3 +25,35 @@
 
 .btn-default.btn-on-4.active{background-color: #006FFC;color: #5BB75B;}
 .btn-default.btn-off-4.active{background-color: #DA4F49;color: #DA4F49;}
+
+.color-in {
+    background: rgba(0, 174, 255, 0.315);
+}
+.color-out {
+    background: #ad310b00;
+    -webkit-transition: all 2000ms linear;
+    -ms-transition: all 2000ms linear;
+    transition: all 2000ms linear;
+}
+  
+.up {
+    background: #0bad132f;
+    -webkit-transition: all 1000ms linear;
+    -ms-transition: all 1000ms linear;
+    transition: all 1000ms linear;
+}
+  
+.down {
+    background: #ad310b2f;
+    -webkit-transition: all 1000ms linear;
+    -ms-transition: all 1000ms linear;
+    transition: all 1000ms linear;
+}
+  
+.unknown {
+    background: #0bad132f;
+    -webkit-transition: all 1000ms linear;
+    -ms-transition: all 1000ms linear;
+    transition: all 1000ms linear;
+}
+  

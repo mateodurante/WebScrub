@@ -60,8 +60,15 @@ class AnnounceBGP(models.Model):
         """
         return self.command(self.block, asn_list=[self.netblock.asn.asn], withdraw=withdraw)
 
-@receiver(pre_delete, sender=AnnounceBGP)
-def delete_repo(sender, instance, **kwargs):
-    for flow in instance.flowspec_set.all():
-        flow.delete()
-    query(instance.as_command(withdraw=True))
+# @receiver(pre_delete, sender=AnnounceBGP)
+# def delete_repo(sender, instance, **kwargs):
+#     for flow in instance.flowspec_set.all():
+#         flow.delete()
+#     query(instance.as_command(withdraw=True))
+
+    def delete_gracefull(self):
+        for flow in self.flowspec_set.all():
+            flow.delete_gracefull()
+        query(self.as_command(withdraw=True))
+        return self.delete()
+

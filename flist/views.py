@@ -19,12 +19,12 @@ def withdraw(request):
     try:
         for c_id in array_flows:
             f = FlowSpec.objects.get(id=c_id)
-            f.delete()
+            f.delete_gracefull()
         
 
         for n_id in array_announces:
             a = AnnounceBGP.objects.get(id=n_id)
-            a.delete()
+            a.delete_gracefull()
 
         return render(request, 'announceList.html', {'fdata': findFlows('all', request), 'adata': findAnnounces('all', request)})
     except Exception as e:
@@ -38,7 +38,7 @@ def withdraw(request):
 def deleteFlow(request, f_id):
     fs = FlowSpec.objects.get(id=f_id)
 
-    if fs.delete():
+    if fs.delete_gracefull():
         messages.success(request, "FlowSpec borrado exitosamente.")
     else:
         messages.error(
@@ -50,7 +50,7 @@ def deleteFlow(request, f_id):
 def deleteAnnounce(request, n_id):
     a = AnnounceBGP.objects.get(id=n_id)
 
-    if a.delete():
+    if a.delete_gracefull():
         messages.success(request, "Anuncio de red borrado exitosamente.")
     else:
         messages.error(

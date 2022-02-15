@@ -53,31 +53,51 @@ def nodestatus(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         address = get_client_ip(request)
+        objs = []
         for d in data['cmds']:
             try:
                 to_save = flatten_dict(d)
                 to_save.update({'address': address})
-                PeerStatus.objects.update_or_create(
-                    address=to_save['address'], cmd=to_save['cmd'],
-                    defaults=to_save,
-                )
+                # PeerStatus.objects.filter(address=address).delete()
+                objs.append(PeerStatus(**to_save))
+                # PeerStatus.objects.update_or_create(
+                #     address=to_save['address'], cmd=to_save['cmd'],
+                #     defaults=to_save,
+                # )
             except Exception as e:
                 print(f'Error al guardar PeerStatus {to_save}')
                 raise e
+        
+        if objs:
+            PeerStatus.objects.filter(address=address).delete()
+            for o in objs:
+                try:
+                    o.save()
+                except Exception as e:
+                    print(f'Error al guardar {o}')
+                    raise e
 
         for d in data['ifaces']:
             try:
                 d.update({'address': address})
                 d['data'] = json.dumps(d['data'])
                 to_save = flatten_dict(d)
-                PeerIfaceStatus.objects.update_or_create(
-                    address=to_save['address'], name=to_save['name'],
-                    defaults=to_save,
-                )
+                # PeerIfaceStatus.objects.filter(address=address).delete()
+                objs.append(PeerIfaceStatus(**to_save))
+                # PeerIfaceStatus(**to_save).save()
             except Exception as e:
                 print(f'Error al guardar PeerIfaceStatus {to_save}')
                 raise e
                 
+        if objs:
+            PeerIfaceStatus.objects.filter(address=address).delete()
+            for o in objs:
+                try:
+                    o.save()
+                except Exception as e:
+                    print(f'Error al guardar {o}')
+                    raise e
+
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
