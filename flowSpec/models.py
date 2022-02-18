@@ -26,18 +26,21 @@ POLICY_CHOICES = (
 class FlowSpec(models.Model):
 
     def validate_port(ranges):
-        # =1024  >1024  >1024&<3500
+        # =1024 >1024&<3500
         valids = ['=', '>']
         min_port = max_port = ''
         values = ranges.split()
         for value in values:
             if value[0] in valids:
-                for i in range(1, len(value)-1):
-                    if value[i] == "&" and value[i+1] == "<":
-                        max_port = value[i+2:len(value)]
-                        break
-                    else:
-                        min_port += value[i]
+                if value[0] == '=':
+                    min_port = value[1:]
+                else:
+                    for i in range(1, len(value)):
+                        if value[i] == "&" and value[i+1] == "<":
+                            max_port = value[i+2:len(value)]
+                            break
+                        else:
+                            min_port += value[i]
                 try:
                     valid_int = int(min_port)
                 except ValueError:
@@ -96,7 +99,7 @@ class FlowSpec(models.Model):
 
     id = models.AutoField(primary_key=True)
     src_net = models.CharField(max_length=18, validators=[
-                               validate_srcnet], blank=True, null=True)
+                               validate_srcnet], default='0.0.0.0/0', null=True)
     dst_net = models.CharField(max_length=18, validators=[validate_dstnet])
     src_port = models.CharField(
         max_length=255, blank=True, null=True, validators=[validate_port])
@@ -106,6 +109,9 @@ class FlowSpec(models.Model):
     policy = models.CharField(max_length=15, choices=POLICY_CHOICES)
     rate_limit = models.IntegerField('', blank=True, null=True)
     announce = models.ForeignKey('announceBGP.AnnounceBGP', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('src_net', 'dst_net', 'src_port', 'dst_port', 't_proto')
 
     @staticmethod
     def command(src_net, dst_net, src_port, dst_port, t_proto, policy, rate_limit, withdraw=False):

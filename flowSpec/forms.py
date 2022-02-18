@@ -50,10 +50,10 @@ class FlowSpecForm(ModelForm):
         net_id = kwargs.pop('net_id')
         super(FlowSpecForm, self).__init__(*args, **kwargs)
         asn = Netblock.objects.get(id=net_id).asn
-        self.fields['src_net'].widget.attrs['placeholder'] = "123.123.123.128/25"
+        self.fields['src_net'].widget.attrs['placeholder'] = "0.0.0.0/0"
         self.fields['dst_net'].widget.attrs['placeholder'] = "123.123.123.128/25 (debe pertenecer al bloque de red anunciado)"
-        self.fields['src_port'].widget.attrs['placeholder'] = "=1024 | >1024 | >1024&<3500"
-        self.fields['dst_port'].widget.attrs['placeholder'] = "=1024 | >1024 | >1024&<3500"
+        self.fields['src_port'].widget.attrs['placeholder'] = "=1024 | >1024&<3500"
+        self.fields['dst_port'].widget.attrs['placeholder'] = "=1024 | >1024&<3500"
         self.fields['announce'].queryset = asn.netblock_set.get(id=net_id).announcebgp_set
 
         """

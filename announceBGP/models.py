@@ -32,7 +32,7 @@ class AnnounceBGP(models.Model):
     # Fields
     id = models.AutoField(primary_key=True)
     netblock = models.ForeignKey(Netblock, on_delete=models.CASCADE)
-    block = models.CharField(max_length=18, validators=[validate_net])
+    block = models.CharField(max_length=18, validators=[validate_net], unique=True)
 
     def __str__(self):
         return self.block
