@@ -1,0 +1,92 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% load helpers %}
+
+{% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
+
+{% block content %}
+	{% for node, node_data in nodes %}
+	    {% for table_name, table in node_data.tables.items %}
+			{% if table_name == 'FORWARD' %}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong>Nodo: {{ node_data.hostname }} ({{ node }}) </strong><br><strong>Chain: {{ table_name }} </strong><br><strong>Fecha: {{ node_data.time|date:"Y-m-d H:i:s" }}</strong>
+						{% if user.is_superuser %}
+							<div class="pull-right">
+								<div class="btn-rigth">
+									<a href="" class="btn btn-xs btn-default">
+									<span class="fa fa-plus-circle fa-fw"></span>Agregar pm
+									</a>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				
+					<table class="table table-condensed table-bordered table-hover">
+						<thead>
+							<th>ASN</th>
+							<th>Packets</th>
+							<th>Bytes</th>
+							<th>Target</th>
+							<th>Protocol</th>
+							<th>Options</th>
+							<th>In</th>
+							<th>Out</th>
+							<th>Source</th>
+							<th>Destination</th>
+							<th>Extra</th>
+							<th>Comentarios</th>
+						</thead>
+						<tbody>
+						{% for line in table %}
+							<tr>
+								<td>{{ line.asn }}</td>
+								<td>{{ line.pkts }}</td>
+								<td>{{ line.bytes }}</td>
+								<td>{{ line.target }}</td>
+								<td>{{ line.prot }}</td>
+								<td>{{ line.opt }}</td>
+								<td>{{ line.in }}</td>
+								<td>{{ line.out }}</td>
+								<td>{{ line.source }}</td>
+								<td>{{ line.destination }}</td>
+								<td>{{ line.extra }}</td>
+								<td><button type="button" class="btn btn-primary open-raw" data-body="{{ line.comments }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+
+<!-- Modal -->
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-xl" style="min-width: 80%;" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <h4 class="modal-title" id="myModalLabel">Raw data</h4>
+		</div>
+		<div class="modal-body">
+		  <pre id="rawcontent">
+		  </pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<script>
+	$(document).on("click", ".open-raw", function () {
+    //  var raw_data = atob($(this).data('body'));
+     var raw_data = $(this).data('body');
+     console.log(raw_data);
+     $(".modal-body #rawcontent").html( raw_data );
+});
+</script>
+{% endblock %}

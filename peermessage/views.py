@@ -107,7 +107,7 @@ def nodestatus(request):
 def shownodestatus(request):
     if request.method == 'GET':
         status = PeerStatus.getAllStatus()
-        return render(request, 'nodestatus_index.html', {'nodes': status})
+        return render(request, 'nodestatus_index.html', {'nodes': sorted(status.items())})
     # return html error
 
 
@@ -116,7 +116,7 @@ def shownodestatus(request):
 def shownodeifacestatus(request):
     if request.method == 'GET':
         status = PeerIfaceStatus.getAllStatus()
-        return render(request, 'nodeifacestatus_index2.html', {'nodes': status})
+        return render(request, 'nodeifacestatus_index2.html', {'nodes': sorted(status.items())})
     # return html error
 
 # GET /peermessage/shownodeifacestatusdata
@@ -127,5 +127,19 @@ def shownodeifacestatusdata(request):
         return JsonResponse({'nodes': status})
     # return html error
 
-    
+# GET /peermessage/shownodeiptablesstatus
+@login_required
+def shownodeiptablesstatus(request):
+    if request.method == 'GET':
+        status = PeerStatus.getIPTables()
+        return render(request, 'nodeiptablesstatus_index2.html', {'nodes': sorted(status.items())})
+    # return html error
+
+# GET /peermessage/shownodeiptablesstatusdata
+@login_required
+def shownodeiptablesstatusdata(request):
+    if request.method == 'GET':
+        status = PeerStatus.getIPTables()
+        return JsonResponse({'nodes': status})
+    # return html error
 

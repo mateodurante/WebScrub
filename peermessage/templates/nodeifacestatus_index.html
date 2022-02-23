@@ -5,7 +5,7 @@
 {% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
 
 {% block content %}
-	{% for node, ifaces in nodes.items %}
+	{% for node, ifaces in nodes %}
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<strong>Nodo de limpieza: {{ ifaces.items|as_list|first|get_item:1|member:'hostname' }} ({{ node }})</strong>

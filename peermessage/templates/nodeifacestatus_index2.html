@@ -14,7 +14,7 @@
 	<input type="radio" value="0" id="btnoff" name="multifeatured_module[module_id][status]">OFF</label>
 </div>
 <hr>
-	{% for node, ifaces in nodes.items %}
+	{% for node, ifaces in nodes %}
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<strong>Nodo de limpieza: {{ ifaces.items|as_list|first|get_item:1|member:'hostname' }} ({{ node }})</strong>
@@ -46,19 +46,21 @@
 				<tbody>
 				{% for name, status in ifaces.items %}
                     {% with status.data|json_loads as datadict %}
-					<tr id="{{ status.address }}~{{ status.name }}">
-						<td class="cell" id="{{ status.address }}~{{ status.name }}~name">{{ status.name }}</td>
-						<td class="cell" id="{{ status.address }}~{{ status.name }}~time">{{ status.time|date:"Y-m-d H:i:s" }}</td>
-						<td class="cell" id="{{ status.address }}~{{ status.name }}~data~operstate">{{ datadict.operstate }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~mtu">{{ datadict.mtu }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_packets">{{ datadict.statistics.rx_packets }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_packets">{{ datadict.statistics.tx_packets }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_bytes">{{ datadict.statistics.rx_bytes|convert_size }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_bytes">{{ datadict.statistics.tx_bytes|convert_size }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_errors">{{ datadict.statistics.rx_errors }}</td>
-                        <td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_errors">{{ datadict.statistics.tx_errors }}</td>
-						<td class="cellButton" id="{{ status.address }}~{{ status.name }}"><button type="button" class="btn btn-primary open-raw" data-body="{{ status.data }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
-					</tr>
+						{% if status.name in user.asn_set.all|get_items_from_dict_list:'asn' or 'eth' in status.name or status.name == 'lo' %}
+							<tr id="{{ status.address }}~{{ status.name }}">
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~name">{{ status.name }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~time">{{ status.time|date:"Y-m-d H:i:s" }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~operstate">{{ datadict.operstate }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~mtu">{{ datadict.mtu }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_packets">{{ datadict.statistics.rx_packets }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_packets">{{ datadict.statistics.tx_packets }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_bytes">{{ datadict.statistics.rx_bytes|convert_size }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_bytes">{{ datadict.statistics.tx_bytes|convert_size }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~rx_errors">{{ datadict.statistics.rx_errors }}</td>
+								<td class="cell" id="{{ status.address }}~{{ status.name }}~data~statistics~tx_errors">{{ datadict.statistics.tx_errors }}</td>
+								<td class="cellButton" id="{{ status.address }}~{{ status.name }}"><button type="button" class="btn btn-primary open-raw" data-body="{{ status.data }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+							</tr>
+						{% endif %}
                     {% endwith %}
 				{% endfor %}
 				</tbody>

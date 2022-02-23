@@ -17,6 +17,10 @@ def get_item(collection, key):
     return ''
 
 @register.filter
+def get_items_from_dict_list(collection, key):
+    return [getattr(c, key) for c in collection]
+
+@register.filter
 def as_list(value):
     return list(value)
 
@@ -57,3 +61,7 @@ def get_atributo(obj, name):
 @register.filter
 def get_c(obj):
     return obj.__class__.__name__
+
+@register.filter
+def slugger(value):
+    return value.replace(' ', '-')

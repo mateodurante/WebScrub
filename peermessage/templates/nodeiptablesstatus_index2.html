@@ -1,0 +1,200 @@
+{% extends "home/apps.html" %}
+{% load bootstrap3 %}
+{% load helpers %}
+
+{% block app_title %}Listado de estados de los scrubbing center's{% endblock %}
+
+{% block content %}
+
+<div class="btn-group" id="status" data-toggle="buttons">
+	<p>Actualización automática </p>
+	<label class="btn btn-default btn-on-1 btn-xs active">
+	<input type="radio" value="1" id="btnon" name="multifeatured_module[module_id][status]" checked="checked">ON</label>
+	<label class="btn btn-default btn-off'1 btn-xs ">
+	<input type="radio" value="0" id="btnoff" name="multifeatured_module[module_id][status]">OFF</label>
+</div>
+<hr>
+{% for node, node_data in nodes %}
+	{% for table_name, table in node_data.tables.items %}
+		{% if table_name == 'FORWARD' %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<strong>Nodo: {{ node_data.hostname }} ({{ node }}) </strong><br><strong>Chain: {{ table_name }} </strong><br><strong>Fecha: {{ node_data.time|date:"Y-m-d H:i:s" }}</strong>
+					{% if user.is_superuser %}
+						<div class="pull-right">
+							<div class="btn-rigth">
+								<a href="" class="btn btn-xs btn-default">
+								<span class="fa fa-plus-circle fa-fw"></span>Agregar pm
+								</a>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+		
+				<table class="table table-condensed table-bordered table-hover">
+					<thead>
+						<th>ASN</th>
+						<th>Packets</th>
+						<th>Bytes</th>
+						<th>Target</th>
+						<th>Protocol</th>
+						<th>Options</th>
+						<th>In</th>
+						<th>Out</th>
+						<th>Source</th>
+						<th>Destination</th>
+						<th>Extra</th>
+						<th>Comentarios</th>
+					</thead>
+					<tbody>
+						{% for line in table %}
+							{% with node|add:"~"|add:table_name|add:"~"|add:line.target|add:"~"|add:line.prot|add:"~"|add:line.opt|add:"~"|add:line.source|add:"~"|add:line.destination|add:"~"|add:line.extra|slugger as id %}
+								<tr>
+									<td class="cell" id="{{ id }}~asn">{{ line.asn }}</td>
+									<td class="cell" id="{{ id }}~pkts">{{ line.pkts }}</td>
+									<td class="cell" id="{{ id }}~bytes">{{ line.bytes }}</td>
+									<td class="cell" id="{{ id }}~target">{{ line.target }}</td>
+									<td class="cell" id="{{ id }}~prot">{{ line.prot }}</td>
+									<td class="cell" id="{{ id }}~opt">{{ line.opt }}</td>
+									<td class="cell" id="{{ id }}~in">{{ line.in }}</td>
+									<td class="cell" id="{{ id }}~out">{{ line.out }}</td>
+									<td class="cell" id="{{ id }}~source">{{ line.source }}</td>
+									<td class="cell" id="{{ id }}~destination">{{ line.destination }}</td>
+									<td class="cell" id="{{ id }}~extra">{{ line.extra }}</td>
+									<td class="cell" id="{{ id }}~comments"><button type="button" class="btn btn-primary open-raw" data-body="{{ line.comments }}" data-toggle="modal" data-target="#myModal">Ver</button></td>
+								</tr>
+							{% endwith %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+
+<!-- Modal -->
+<div class="modal  fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-xl" style="min-width: 80%;" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		  <h4 class="modal-title" id="myModalLabel">Raw data</h4>
+		</div>
+		<div class="modal-body">
+		  <pre id="rawcontent">
+		  </pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<script>
+	$(document).on("click", ".open-raw", function () {
+     var raw_data = $(this).data('body');
+    //  console.log(raw_data);
+     $(".modal-body #rawcontent").html( JSON.stringify(raw_data, null, 2) );
+});
+
+function findProp(obj, prop, defval){
+	// console.log(obj, prop, defval);
+    if (typeof defval == 'undefined') defval = null;
+    p = prop.split('~');
+	// console.log(obj[p[0]]['tables'][p[1]]);
+	for (i in obj[p[0]]['tables'][p[1]]) {
+		var l = obj[p[0]]['tables'][p[1]][i];
+		if (l['target'].replaceAll(' ', '-') == p[2] && l['prot'].replaceAll(' ', '-') == p[3] && l['opt'].replaceAll(' ', '-') == p[4] && l['source'].replaceAll(' ', '-') == p[5] && l['destination'].replaceAll(' ', '-') == p[6] && l['extra'].replaceAll(' ', '-') == p[7]) {
+			return l[p[8]];
+		}
+	}
+}
+
+function bytesToSize(bytes) {
+    var sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+    if (bytes == 0) return '0 B';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+//    console.log(i);
+//    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+	var x = bytes / Math.pow(1024, i);
+    return x.toFixed(2) + ' ' + sizes[i];
+}
+
+
+function fade_element(elem){
+	//Color row background in HSL space (easier to manipulate fading)
+	document.getElementById(elem).classList.remove('color-in');
+	document.getElementById(elem).classList.remove('color-out');
+	document.getElementById(elem).classList.add('color-in');
+	setTimeout(function(){
+		document.getElementById(elem).classList.add('color-out');
+	}, 1000);
+}
+
+var cells = $('.cell');
+var cellButtons = $('.cellButton');
+
+function do_all(feedback){
+	feedback = JSON.parse(feedback);
+	cells.each(function(i, obj) {
+		new_data = findProp(feedback['nodes'], obj.id, '');
+		// if (obj.id.includes('bytes')){
+		// 	new_data = bytesToSize(new_data);
+		// }
+		if (obj.id.includes('target')){
+			if (new_data == "DROP"){
+				document.getElementById(obj.id).parentNode.classList.remove('up');
+				document.getElementById(obj.id).parentNode.classList.remove('down');
+				document.getElementById(obj.id).parentNode.classList.remove('ratelimit');
+				document.getElementById(obj.id).parentNode.classList.add('down');
+			} else if (new_data == "ACCEPT"){
+				document.getElementById(obj.id).parentNode.classList.remove('up');
+				document.getElementById(obj.id).parentNode.classList.remove('down');
+				document.getElementById(obj.id).parentNode.classList.remove('ratelimit');
+				document.getElementById(obj.id).parentNode.classList.add('up');
+			}
+		}
+
+		if (obj.id.includes('extra')){
+			if (new_data.includes("limit:")){
+				document.getElementById(obj.id).parentNode.classList.remove('up');
+				document.getElementById(obj.id).parentNode.classList.remove('down');
+				document.getElementById(obj.id).parentNode.classList.remove('ratelimit');
+				document.getElementById(obj.id).parentNode.classList.add('ratelimit');
+			}
+		}
+		if (new_data != obj.innerHTML && ! obj.id.includes('comments')){
+			obj.innerHTML = new_data;
+			fade_element(obj.id);
+		}
+		if (obj.id.includes('comments')){
+			obj.children[0].setAttribute('data-body' , new_data);
+		}
+	});
+	cellButtons.each(function(i, obj) {
+		new_data = findProp(feedback['nodes'], obj.id, '');
+		obj.children[0].setAttribute('data-body' , new_data, null, 2);
+	});
+}
+
+function get_fb(){
+	if (document.getElementById('btnon').checked) {
+		var feedback = $.ajax({
+			type: "GET",
+			url: "/peermessage/shownodeiptablesstatusdata",
+			async: false
+		}).success(function(){
+		}).responseText;
+		do_all(feedback);
+	}
+}
+setInterval(get_fb, 5000);
+
+// on document ready
+$(document).ready(function(){
+	get_fb();
+});
+</script>
+{% endblock %}

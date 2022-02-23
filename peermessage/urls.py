@@ -9,4 +9,6 @@ urlpatterns = [
             url(r'^shownodestatus$', views.shownodestatus, name='peermessage_shownodestatus'),
             url(r'^shownodeifacestatus$', views.shownodeifacestatus, name='peermessage_shownodeifacestatus'),
             url(r'^shownodeifacestatusdata$', views.shownodeifacestatusdata, name='peermessage_shownodeifacestatusdata'),
+            url(r'^shownodeiptablesstatus$', views.shownodeiptablesstatus, name='peermessage_shownodeiptablesstatus'),
+            url(r'^shownodeiptablesstatusdata$', views.shownodeiptablesstatusdata, name='peermessage_shownodeiptablesstatusdata'),
 ]

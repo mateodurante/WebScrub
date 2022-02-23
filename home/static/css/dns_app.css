@@ -57,3 +57,10 @@
     transition: all 1000ms linear;
 }
   
+.ratelimit {
+    background: #9dad0b2f;
+    -webkit-transition: all 1000ms linear;
+    -ms-transition: all 1000ms linear;
+    transition: all 1000ms linear;
+}
+  
