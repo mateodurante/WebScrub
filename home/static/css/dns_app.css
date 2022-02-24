@@ -58,7 +58,7 @@
 }
   
 .ratelimit {
-    background: #9dad0b2f;
+    background: #fffb0080;
     -webkit-transition: all 1000ms linear;
     -ms-transition: all 1000ms linear;
     transition: all 1000ms linear;
