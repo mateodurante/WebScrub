@@ -86,7 +86,7 @@ class PeerStatus(models.Model):
         """
         tables = {}
         for node in PeerStatus.getNodes():
-            ps = PeerStatus.getLastStatus(node, 'iptables -nL -v')
+            ps = PeerStatus.getLastStatus(node, 'iptables -nvxL')
             if ps:
                 tables[node] = {
                     'tables': PeerStatus._parseIPTables(ps.getStdoutDecoded()),

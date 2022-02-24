@@ -6,13 +6,29 @@
 
 {% block content %}
 
-<div class="btn-group" id="status" data-toggle="buttons">
-	<p>Actualización automática </p>
-	<label class="btn btn-default btn-on-1 btn-xs active">
-	<input type="radio" value="1" id="btnon" name="multifeatured_module[module_id][status]" checked="checked">ON</label>
-	<label class="btn btn-default btn-off'1 btn-xs ">
-	<input type="radio" value="0" id="btnoff" name="multifeatured_module[module_id][status]">OFF</label>
+<!-- <div class="pull-right" > -->
+<!-- columns -->
+<div class="row">
+	<div class="col-md-6">
+		<p>Leyenda:  </p>
+		<!-- <span class="label label-default">Default Label</span>
+		<span class="label label-primary">Primary Label</span> -->
+		<span class="label label-info">UPDATE</span>
+		<span class="label label-success">ALLOW</span>
+		<span class="label label-warning">RATE LIMIT</span>
+		<span class="label label-danger">DENY</span> 
+	</div>
+	<div class="col-md-6">
+		<div class="btn-group" id="status" data-toggle="buttons">
+			<p>Actualización automática </p>
+			<label class="btn btn-default btn-on-1 btn-xs active">
+			<input type="radio" value="1" id="btnon" name="multifeatured_module[module_id][status]" checked="checked">ON</label>
+			<label class="btn btn-default btn-off'1 btn-xs ">
+			<input type="radio" value="0" id="btnoff" name="multifeatured_module[module_id][status]">OFF</label>
+		</div>
+	</div>
 </div>
+<!-- right div -->
 <hr>
 {% for node, node_data in nodes %}
 	{% for table_name, table in node_data.tables.items %}
