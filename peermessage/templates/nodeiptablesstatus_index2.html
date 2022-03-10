@@ -156,9 +156,9 @@ function do_all(feedback){
 	feedback = JSON.parse(feedback);
 	cells.each(function(i, obj) {
 		new_data = findProp(feedback['nodes'], obj.id, '');
-		// if (obj.id.includes('bytes')){
-		// 	new_data = bytesToSize(new_data);
-		// }
+		if (obj.id.includes('bytes')){
+			new_data = bytesToSize(new_data);
+		}
 		if (obj.id.includes('target')){
 			if (new_data == "DROP"){
 				document.getElementById(obj.id).parentNode.classList.remove('up');
