@@ -24,9 +24,9 @@ class AnnounceBGP(models.Model):
                 _('Bloque de red ingresado no pertenece a un bloque público.'),
                 params={'value': value},
             )
-        if mask < 16 or mask > 26:
+        if mask < 16 or mask > 24:
             raise ValidationError(
-                _('Mascara de red no válida (debe ser mayor que /15 y menor a /27)'),
+                _('Mascara de red no válida (debe ser mayor que /15 y menor a /25)'),
             )
 
     # Fields
