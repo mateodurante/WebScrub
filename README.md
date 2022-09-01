@@ -1,7 +1,20 @@
 Repositorio de WebScrub
 
+Este repositorio es la interfaz web del ScrubbingUNLP: https://github.com/mateodurante/ScrubbingUNLP
+
+Para mas información de cómo utilizarlo ir al repositorio de la configuracion y tesina https://github.com/mateodurante/ExaBGP-ScrubbingCenter
+
 
 Las contraseñas de los usuarios son:
-administrator: administrator
+user: administrator
+pass: administrator
 
-otros usuarios: pass123456 o scrub123
+otros usuarios: 
+user: unlp
+pass: pass123456
+
+user: uba
+pass: pass123456
+
+user: unq
+pass: pass123456
